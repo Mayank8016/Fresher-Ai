@@ -1,0 +1,31 @@
+import nodemailer from "nodemailer";
+
+
+
+const sendEmail = async ({ to, subject, text }) => {
+    console.log("Sending email to:", to);
+    const transporter = nodemailer.createTransport({
+  host: process.env.EMAIL_HOST,
+  port: process.env.EMAIL_PORT,
+  secure: false, // TLS will be used with STARTTLS
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS, // Google App Password
+  },
+});
+  try {
+    const info = await transporter.sendMail({
+      from: `"My Auth App" <${process.env.EMAIL_USER}>`,
+      to,
+      subject,
+      text,
+    });
+
+    console.log("Email sent:", info.messageId);
+  } catch (error) {
+    console.error("Email sending failed:", error);
+    throw error;
+  }
+};
+
+export default sendEmail;
